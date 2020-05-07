@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "180346021433",
+    "firebase_url": "https://netbor2.firebaseio.com",
+    "project_id": "netbor2",
+    "storage_bucket": "netbor2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:180346021433:android:4089893edc2c953dbdcfe8",
+        "android_client_info": {
+          "package_name": "com.example.netbor2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "180346021433-m9uukofa2h63ufnv7o8fjbcsd3il99eq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEDC1AVOOGPI-y8s9Nhg9q4VyJRQyKBwQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "180346021433-m9uukofa2h63ufnv7o8fjbcsd3il99eq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
