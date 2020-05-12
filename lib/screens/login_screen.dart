@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:netbor2/services/auth.dart';
 import './create_account.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -9,6 +10,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   String _email;
   String _password;
+  final AuthService _auth = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +85,22 @@ class _LoginScreenState extends State<LoginScreen> {
                           MaterialPageRoute(builder: (context) {
                             return CreateAccountScreen();
                           }));
-                    },)),)
+                    },)),),
+          Container(
+          margin: EdgeInsets.only(top: 2.0),
+          child: ButtonTheme(
+              minWidth: 200,
+              child: RaisedButton(
+                color: Colors.black,
+                child: Text('Sign-In Anon'),
+                onPressed: () async{
+                  dynamic result = await _auth.signInAnon();
+                  if (result == null) {print('error signing in');}
+                  else {
+                    print('signed in');
+                    print(result.uid);
+                  }
+                },)),)
             ]),
       )),
     );

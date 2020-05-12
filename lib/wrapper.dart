@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import '../screens/home_screen.dart';
+import 'screens/authenticate.dart';
+
 
 class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return Home();
+    return Authenticate();
   }
 }

@@ -1,10 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import './screens/login_screen.dart';
-import 'screens/account_screen.dart';
-import 'screens/home_screen.dart';
-import 'screens/profile_screen.dart';
-import './screens/create_account.dart';
+import 'wrapper.dart';
+
 
 void main() => runApp(new MyApp());
 
@@ -33,15 +30,9 @@ class MyApp extends StatelessWidget {
           body1: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
         ),
       ),
-      home: LoginScreen(),
-      routes:<String, WidgetBuilder> {
-        '/firstscreen': (BuildContext context) => new MyApp(),
-        '/signup': (BuildContext context) => new CreateAccountScreen(),
-        '/homescreen': (BuildContext context) => new Home(),
-      },
+      home: Wrapper(),
 
-    );
-  }
+    );}
 
 
 }
