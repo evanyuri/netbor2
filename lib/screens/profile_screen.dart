@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
+import '../services/database.dart';
+import '../models/bio.dart';
+import 'package:provider/provider.dart';
 
-class profile_screen extends StatefulWidget {
+class ProfileScreen extends StatefulWidget {
+
+
+
   @override
-  _profile_screenState createState() => _profile_screenState();
+  _ProfileScreenState createState() => _ProfileScreenState();
 }
 
-class _profile_screenState extends State<profile_screen> {
+class _ProfileScreenState extends State<ProfileScreen> {
+  final Bio bio;
+  _ProfileScreenState({this.bio});
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -35,7 +44,7 @@ class _profile_screenState extends State<profile_screen> {
           Center(
           child: CircleAvatar(
           radius: 100,
-          backgroundImage: AssetImage('images/bust.png'),
+          backgroundImage: NetworkImage(bio.picURL),
         )
                        ),
               Text(

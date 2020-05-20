@@ -1,6 +1,5 @@
 name: netbor2
-description: A new Flutter application.
-
+description: A new poximity networking app
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
 # followed by an optional build number separated by a +.
@@ -21,6 +20,7 @@ dependencies:
   firebase_auth: ^0.14.0+5
   cloud_firestore: ^0.12.9+5
   firebase_storage:
+  provider: ^3.1.1
   image_picker:
   flutter:
     sdk: flutter
