@@ -16,6 +16,7 @@ class CreateAccountScreen extends StatefulWidget {
 class _CreateAccountScreenState extends State<CreateAccountScreen> {
 String email = '';
 String password = '';
+String passwordConfirm ='';
 String error = '';
 final AuthService _auth = AuthService();
 final _formkey = GlobalKey<FormState>();
@@ -61,6 +62,7 @@ final _formkey = GlobalKey<FormState>();
                             labelText: 'email:',
                           )),
                               TextFormField(
+                                  obscureText: true,
                                   validator: (val) => val.length < 6  ? 'Enter a password 6+ chars long' : null,
                                   onChanged: (val) {setState(() => password = val);},
                                   style: TextStyle(
@@ -69,7 +71,19 @@ final _formkey = GlobalKey<FormState>();
                                   ),
                                   decoration: const InputDecoration(
                                     hintText: '',
-                                    labelText: 'password:',
+                                    labelText: 'new password:',
+                                  )),
+                              TextFormField(
+                                  obscureText: true,
+                                  validator: (val) => val.length < 6  ? 'Enter a password 6+ chars long' : null,
+                                  onChanged: (val) {setState(() => passwordConfirm = val);},
+                                  style: TextStyle(
+                                    decorationColor: Colors.white,
+                                    color: Colors.white,
+                                  ),
+                                  decoration: const InputDecoration(
+                                    hintText: '',
+                                    labelText: 'confirm password:',
                                   )),
 
                 Container(
@@ -78,21 +92,23 @@ final _formkey = GlobalKey<FormState>();
                         minWidth: 200,
                         child: RaisedButton(child: Text('Create Account'),
                             onPressed: () async {
-                              if (_formkey.currentState.validate()) {
+                          if (password == passwordConfirm) {
+                            if (_formkey.currentState.validate()) {
                                 dynamic result = await _auth
                                     .registerWithEmailAndPassword(
                                     email, password);
                                 if (result == null) {
                                   setState(() =>
                                   error = 'please provide a valid email');
-                                  ;
-                                }}}))),
+                                }}}
+                        else {setState(() =>
+                          error = 'passwords do not match');}}))),
                 Container(
                     margin: EdgeInsets.only(top: 5.0),
                     child: ButtonTheme(
                         minWidth: 200,
-                        child: RaisedButton(
-                          color: Colors.black,
+                        child: FlatButton(
+                          color: Colors.transparent,
                           child: Text('Return to Login'),
                           onPressed: () {widget.toggleView();},
                         ))),]),

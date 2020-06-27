@@ -19,8 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-        child: Scaffold(
+    return  Scaffold(
       body: SafeArea(
 
         child: ListView(
@@ -96,12 +95,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   margin: EdgeInsets.only(top: 2.0),
                   child: ButtonTheme(
                       minWidth: 200,
-                      child: RaisedButton(
-                        color: Colors.black,
+                      child: FlatButton(
+                        color: Colors.transparent,
                           child: Text('Join the Netborhood'),
                     onPressed: () {widget.toggleView();},)),),
             ]),
-      )),
-    );
+      ))
+    ;
   }
 }

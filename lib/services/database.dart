@@ -2,6 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:netbor2/models/user.dart';
 import '../models/bio.dart';
 import '../models/user.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:geolocator/geolocator.dart';
+
 
 class DatabaseService {
 
@@ -19,7 +22,7 @@ class DatabaseService {
         'name': name,
       'bio': bio,
       'blurb': blurb,
-      'picURL': picURL
+      'picURL': picURL,
 
     });
   }
@@ -52,8 +55,6 @@ class DatabaseService {
     return bioCollection.snapshots()
         .map(_bioListFromSnapshot);
   }
-
-//get user doc steam
 
   // get user doc stream
   Stream<UserData> get userData {

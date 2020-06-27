@@ -13,30 +13,16 @@ class _DetailPageState extends State<DetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        theme: ThemeData(
-// Define the default brightness and colors.
-          brightness: Brightness.dark,
-          scaffoldBackgroundColor: Colors.black,
-          primaryColor: Colors.white,
-          accentColor: Colors.white,
-
-// Define the default font family.
- // Define the default TextTheme. Use this to specify the default
-// text styling for headlines, titles, bodies of text, and more.
-          textTheme: TextTheme(
-            headline: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
-            title: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
-            ),
-        ),
-        home: Scaffold(
+    return
+     Scaffold(
           body: SafeArea(
             child: ListView(
                 children: <Widget>[
                   Center(
                       child: CircleAvatar(
                         radius: 100,
-                        backgroundImage: NetworkImage(widget.post.data['picURL']),
+                        backgroundImage:
+                        (widget.post.data['picURL'] != null) ? NetworkImage(widget.post.data['picURL']) : AssetImage('images/logohappy.png'),
                       )
                   ),
                   Padding(
@@ -77,21 +63,22 @@ class _DetailPageState extends State<DetailPage> {
               child: Container(
 
                 decoration: BoxDecoration(
+                  color: null,
                   border: Border.all(
-                              color: Colors.white,
+                              color: Colors.transparent,
                               width: 1,
                             ),
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(5),
                           ),
                           child: Padding(
                             padding: EdgeInsets.all(8.0),
-                            child: Text( 'Hello this part of the profile is about myself. I am a chemical engineer who has a passsion for helping the world. I dont do things for money. I do things becasue I think they will help me or my loved ones.',
-                            ),),),
+                            child: Text(widget.post.data['bio']),
+                            ),),
                       )     ,
 
                     ],
                   ),
 
-                ]),),));}}
+                ]),),);}}
 
 

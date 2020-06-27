@@ -1,3 +1,5 @@
+import 'package:geolocator/geolocator.dart';
+
 class User {
 
   final String uid;
