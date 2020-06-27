@@ -41,7 +41,8 @@ class AuthService {
 
       //create a new document for the user with the ui.d
       await DatabaseService(uid: user.uid).updateUserData(
-          'New User', 'My bio is blank :-O', 'my blurb', ' ',);
+          'New User', 'My bio is blank :-O', 'my blurb', 'https://firebasestorage.googleapis.com/v0/b/netbor2.appspot.com/o/logohappy.png?alt=media&token=ec740992-2c8c-4456-a507-1b735eb5e6b3',);
+
       return _userFromFirebaseUser(user);
     }
     catch (e) {

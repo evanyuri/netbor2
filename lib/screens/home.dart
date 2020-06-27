@@ -9,6 +9,7 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:provider/provider.dart';
 import 'package:netbor2/models/user.dart';
 import '../services/database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 
 
@@ -71,9 +72,22 @@ class _MyHomePageState extends State<MyHomePage> {
                     width: 50,
                     child: FlatButton(
 
-                        onPressed: (null),
+                        onPressed: () async {
+                          Geoflutterfire geo = Geoflutterfire();
+                          Position position = await Geolocator().getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
+                          GeoFirePoint myLocation = geo.point(latitude: position.latitude, longitude: position.longitude);
+
+                          var firebaseUser = await FirebaseAuth.instance.currentUser();
+          Firestore.instance.collection("bios").document(user.uid).updateData(
+          {"position" : myLocation.data,});
+
+                        },
                         padding: EdgeInsets.only(top: 7.0),
-                        child: Image.asset('images/connects.png')))
+                        child: Icon(
+                          Icons.location_on,
+                          color: Colors.teal,
+                          size: 35,
+                            )))
               ],
             ),
             body: ListPage(),
