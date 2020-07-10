@@ -12,7 +12,7 @@ import '../services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 
-
+String _usersearch;
 Geoflutterfire geo;
 
 class MyHomePage extends StatefulWidget {
@@ -55,6 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 padding: EdgeInsets.only(top: 7),
                 height: 40,
                 child: TextField(
+                    onChanged: (search) => setState(() => _usersearch = search),
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.only(top: 7),
                     prefixIcon: Icon(Icons.search),
@@ -74,13 +75,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
                         onPressed: () async {
                           Geoflutterfire geo = Geoflutterfire();
-                          Position position = await Geolocator().getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
+                          Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
                           GeoFirePoint myLocation = geo.point(latitude: position.latitude, longitude: position.longitude);
 
-                          var firebaseUser = await FirebaseAuth.instance.currentUser();
           Firestore.instance.collection("bios").document(user.uid).updateData(
-          {"position" : myLocation.data,});
-
+          {"position" : myLocation.data, "hashes" : FieldValue.arrayUnion(["cat", "dog"])});
+print(_usersearch);
                         },
                         padding: EdgeInsets.only(top: 7.0),
                         child: Icon(
@@ -113,7 +113,7 @@ class _ListPageState extends State<ListPage> {
     //Stream location
     var long;
     var position;
-    var locationOptions = LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 10);
+    var locationOptions = LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 30);
 
 //navigate to details page function
     navigateToDetail(DocumentSnapshot post){
@@ -128,23 +128,45 @@ class _ListPageState extends State<ListPage> {
     if (snapshot.hasError)
     return new Text('Error: ${snapshot.error}');
     switch (snapshot.connectionState) {
-      case ConnectionState.waiting:
-        return new Text('Loading...');
-      default:
+    case ConnectionState.waiting:
+    return new Text('Loading...');
+    default:
 
-      // get user profiles within your location
-        geo = Geoflutterfire();
-        GeoFirePoint center = geo.point(latitude: snapshot.data.latitude, longitude: snapshot.data.longitude);
-        Firestore _firestore = Firestore.instance;
-        var collectionReference = _firestore.collection('bios');
+    // get user profiles within your location and query keyword search
+    query() {
+      //if search bar is empty return all by distance
+    if(_usersearch == "") {
+    geo = Geoflutterfire();
+    GeoFirePoint center = geo.point(latitude: snapshot.data.latitude,
+    longitude: snapshot.data.longitude);
+    Firestore _firestore = Firestore.instance;
+    var collectionReference = _firestore.collection('bios');
 
-        var stream = geo
-            .collection(collectionRef: collectionReference)
-            .within(center: center, radius: 5000, field: 'position');
+    var stream = geo
+        .collection(collectionRef: collectionReference)
+        .within(center: center, radius: 10000, field: 'position');
+    return stream;
+    }
+    else {
+      //if search bare contains anything return the search sorted by distance
+      geo = Geoflutterfire();
+      GeoFirePoint center = geo.point(latitude: snapshot.data.latitude,
+          longitude: snapshot.data.longitude);
+      Firestore _firestore = Firestore.instance;
+      var collectionReference = _firestore.collection('bios').where(
+          "hashes", arrayContains: _usersearch);
+
+      var stream = geo
+          .collection(collectionRef: collectionReference)
+          .within(center: center, radius: 10000, field: 'position');
+
+      return stream;
+    }
+    }
 
 
         return StreamBuilder(
-          stream: stream,
+          stream: query(),
           builder: (BuildContext context,
               AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
             if (snapshot.hasError)
@@ -164,7 +186,7 @@ class _ListPageState extends State<ListPage> {
                               radius: 28.0,
                               backgroundColor: Colors.blueGrey,
                               backgroundImage:
-                              (data['picURL'] != null) ? NetworkImage(
+                              (data['picURL'] != "") ? NetworkImage(
                                   data['picURL']) : AssetImage(
                                   'images/logohappy.png')
                           ),

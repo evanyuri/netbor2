@@ -10,13 +10,17 @@ import 'dart:io';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:geohash/geohash.dart';
+import 'dart:io';
+import 'package:image/image.dart' as img;
+
+
 
 
 
 class AccountScreen extends StatefulWidget {
   @override
   _AccountScreenState createState() => _AccountScreenState();
+
 }
 
 class _AccountScreenState extends State<AccountScreen> {
@@ -24,10 +28,9 @@ class _AccountScreenState extends State<AccountScreen> {
   String _currentBio;
   String _currentBlurb;
   String _currentPicURL;
-  String _currentHash;
-  double _currentLat;
-  double _currentLong;
+  List _currentHash;
   File _image;
+  RegExp exp = new RegExp(r"\B#\w\w+");
 
 
   AuthService _auth = AuthService();
@@ -62,7 +65,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   children: <Widget>[
                     Center(child: Builder(
                         builder: (context) {
-                          if (userData.picURL==null) {
+                          if (userData.picURL=="") {
                             return CircleAvatar(
                                 radius: 100,
                                 backgroundImage:
@@ -148,6 +151,7 @@ class _AccountScreenState extends State<AccountScreen> {
                           child: TextFormField(
                             initialValue: userData.bio,
                             onChanged: (bio) => setState(() => _currentBio = bio),
+
                             maxLines: null,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
@@ -170,31 +174,45 @@ class _AccountScreenState extends State<AccountScreen> {
                               child: Text('Save'),
                               onPressed: () async {
                                 if (_image!=null){
-                                  final StorageReference firebaseStorageRef = FirebaseStorage.instance.ref()
-                                      .child(userData.uid);
-                                  final uploadTask = firebaseStorageRef.putFile(_image);
+
+                                  img.Image image_temp = img.decodeImage(_image.readAsBytesSync());
+                                  img.Image resized_img = img.copyResize(image_temp, width:600);
+                                  final StorageReference firebaseStorageRef = FirebaseStorage.instance.ref().child(userData.uid);
+
+                                  final StorageUploadTask uploadTask = firebaseStorageRef.putData(img.encodeJpg(resized_img));
                                   final StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
-                                  final ref = FirebaseStorage.instance.ref().child(userData.uid);
+                                  final ref = await FirebaseStorage.instance.ref().child(userData.uid);
                                   // no need of the file extension, the name will do fine.
                                   _currentPicURL = await ref.getDownloadURL();
                                 }
+
+//                               await DatabaseService(uid: user.uid).updateUserData(
+//                                    _currentName ?? userData.name,
+//                                    _currentBio ?? userData.bio,
+//                                    _currentBlurb ?? userData.blurb,
+//                                    _currentPicURL ?? userData.picURL);
+// get hashtags
+                                RegExp exp = new RegExp(r"(?<=#)\w\w+");
+                                _currentHash = [];
+                                exp.allMatches(_currentBio ?? userData.bio).forEach((match){
+                                  _currentHash.add(match.group((0)));
+                                });
+//put into firebase
+
+                                 Geoflutterfire geo = Geoflutterfire();
                                 Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-                                var long = _currentLong = position.longitude.toDouble();
-                                var lat = _currentLat = position.latitude.toDouble();
-                                var encoded = Geohash.encode(lat,long);
-                                print (encoded);
-                                print (_currentLat);
-                                print (position);
-                                _currentHash = encoded;
+                                GeoFirePoint myLocation = geo.point(latitude: position.latitude, longitude: position.longitude);
+                                await Firestore.instance.collection("bios").document(user.uid).updateData({
+                               "position" : myLocation.data,
+                                  "hashes" : (_currentHash),
+                                  "name" : _currentName ?? userData.name,
+                                "bio": _currentBio ?? userData.bio,
+                                  "blurb": _currentBlurb ?? userData.blurb,
+                                  "picURL": _currentPicURL ?? userData.picURL,
+                                });
+print(_currentHash);
 
-
-
-
-                                await DatabaseService(uid: user.uid).updateUserData(
-                                    _currentName ?? userData.name,
-                                    _currentBio ?? userData.bio,
-                                    _currentBlurb ?? userData.blurb,
-                                    _currentPicURL ?? userData.picURL);
+//pop to previous screen
                                 Navigator.pop(context);
 
 
@@ -224,7 +242,15 @@ class _AccountScreenState extends State<AccountScreen> {
                                 style: TextStyle(color: Colors.red)),
                             onPressed: () async {
                               FirebaseUser user = await FirebaseAuth.instance.currentUser();
+                              //delete account data
+                              Firestore.instance.collection("bios").document(user.uid).delete();
+                              //delete account
                               user.delete();
+                              //delete image
+                              FirebaseStorage.instance
+                                  .getReferenceFromUrl("\(user.uid)/.jpg")
+                                  .then((reference) => reference.delete());
+                              //pop out of page
                               Navigator.pop(context);
                             },
                             //async {
@@ -232,6 +258,29 @@ class _AccountScreenState extends State<AccountScreen> {
                             //}
 
                           )),),
+          Container(
+          margin: EdgeInsets.only(top: 10.0),
+          child: ButtonTheme(
+          minWidth: 200,
+          child: FlatButton(
+          color: Colors.transparent,
+          child: Text('Test Button'),
+          onPressed: () async {
+
+
+            // no need of the file extension, the name will do fine.
+            print(_image);
+            print(_currentPicURL);
+           // RegExp exp = new RegExp(r"\B#\w\w+");
+            RegExp exp = new RegExp(r"(?<=#)\w\w+");
+            var hashes = [];
+            exp.allMatches(_currentBio ?? userData.bio).forEach((match){
+              hashes.add(match.group((0)));
+            });
+            print(hashes);
+
+          }
+          )),),
 
 
                   ]
