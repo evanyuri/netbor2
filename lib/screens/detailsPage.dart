@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -17,6 +18,7 @@ class _DetailPageState extends State<DetailPage> {
      Scaffold(
           body: SafeArea(
             child: ListView(
+              padding: EdgeInsets.only(top: 10, right: 10, left: 10 ),
                 children: <Widget>[
                   Center(
                       child: CircleAvatar(

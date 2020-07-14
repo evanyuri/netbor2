@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'account_screen.dart';
@@ -9,7 +7,7 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:provider/provider.dart';
 import 'package:netbor2/models/user.dart';
 import '../services/database.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'donationPage.dart';
 
 
 String _usersearch;
@@ -74,17 +72,19 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: FlatButton(
 
                         onPressed: () async {
-                          Geoflutterfire geo = Geoflutterfire();
-                          Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-                          GeoFirePoint myLocation = geo.point(latitude: position.latitude, longitude: position.longitude);
-
-          Firestore.instance.collection("bios").document(user.uid).updateData(
-          {"position" : myLocation.data, "hashes" : FieldValue.arrayUnion(["cat", "dog"])});
-print(_usersearch);
+//                          Geoflutterfire geo = Geoflutterfire();
+//                          Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+//                          GeoFirePoint myLocation = geo.point(latitude: position.latitude, longitude: position.longitude);
+//                          Firestore.instance.collection("bios").document(user.uid).updateData({"position" : myLocation.data});
+                          Navigator.push(context,
+                              MaterialPageRoute(
+                                  builder: (context) {
+                                    return donationPage();
+                                  }));
                         },
                         padding: EdgeInsets.only(top: 7.0),
                         child: Icon(
-                          Icons.location_on,
+                          Icons.card_giftcard,
                           color: Colors.teal,
                           size: 35,
                             )))
@@ -140,6 +140,8 @@ class _ListPageState extends State<ListPage> {
     GeoFirePoint center = geo.point(latitude: snapshot.data.latitude,
     longitude: snapshot.data.longitude);
     Firestore _firestore = Firestore.instance;
+
+
     var collectionReference = _firestore.collection('bios');
 
     var stream = geo
@@ -159,6 +161,9 @@ class _ListPageState extends State<ListPage> {
       var stream = geo
           .collection(collectionRef: collectionReference)
           .within(center: center, radius: 10000, field: 'position');
+
+      //stream upload user data
+
 
       return stream;
     }
