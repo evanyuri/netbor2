@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-//import 'package:netbor2/screens/home.dart';
 import 'package:netbor2/models/user.dart';
 import 'package:provider/provider.dart';
 import 'screens/authenticate.dart';

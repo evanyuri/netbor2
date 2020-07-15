@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:netbor2/screens/cardhome.dart';
 import 'package:stripe_payment/stripe_payment.dart';
 import 'dart:io';
 import "package:http/http.dart";
@@ -23,9 +24,12 @@ class donationPage extends StatefulWidget {
 
 class donationPageState extends State<donationPage> {
 
-
   @override
   Widget build(BuildContext context) {
+
+
+
+
 
     return  Scaffold(
         body: SafeArea(
@@ -61,24 +65,35 @@ class donationPageState extends State<donationPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                        margin: EdgeInsets.only(top: 10.0, right:2, left: 2),
-
+                        margin: EdgeInsets.only(top: 15.0, right:2, left: 2),
+                        height: 60,
+                        width: 120,
                         child: ButtonTheme(
-                                child: RaisedButton(
+                            child: RaisedButton(
                                 color: Colors.teal,
                                 child: Text('\$5'),
                                 onPressed: (null)
                             ))),
                     Container(
-                        margin: EdgeInsets.only(top: 10.0, right:2, left: 2),
+                        margin: EdgeInsets.only(top: 15.0, right:2, left: 2),
+                        height: 60,
+                        width: 120,
                         child: ButtonTheme(
                             child: RaisedButton(
                                 color: Colors.teal,
                                 child: Text('\$10'),
                                 onPressed: (null)
                             ))),
+
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
                     Container(
-                        margin: EdgeInsets.only(top: 10.0, right:2, left: 2),
+                        margin: EdgeInsets.only(top: 4.0, right:2, left: 2),
+                        height: 60,
+                        width: 120,
                         child: ButtonTheme(
                             child: RaisedButton(
                                 color: Colors.teal,
@@ -86,7 +101,9 @@ class donationPageState extends State<donationPage> {
                                 onPressed: (null)
                             ))),
                     Container(
-                        margin: EdgeInsets.only(top: 10.0, right:2, left: 2),
+                        margin: EdgeInsets.only(top: 4.0, right:2, left: 2),
+                        height: 60,
+                        width: 120,
                         child: ButtonTheme(
                             child: RaisedButton(
                                 color: Colors.teal,
@@ -95,39 +112,36 @@ class donationPageState extends State<donationPage> {
                             )))
                   ],
                 ),
-                Form(
-                    child: Column(
-                      children: <Widget>[
-                        Text(error,
-                          style: TextStyle(color: Colors.red, fontSize: 14.0),
-                        ),
-                        Form(
-                            child: TextFormField(
-                                obscureText: true,
-                                validator: (val) => val.length < 6  ? 'Enter a password 6+ chars long' : null,
-                                onChanged: (val) {setState(() => password = val);},
-                                style: TextStyle(
-                                  decorationColor: Colors.white,
-                                  color: Colors.white,
-                                ),
-                                decoration: const InputDecoration(
-                                  hintText: '\$ Custom Amount (USD)',
-                                  labelText: null,
-                                ))),
-
-                      ],
-                    )
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      width: 200,
+                     child: Form(
+                        child: TextFormField(
+                            obscureText: false,
+                            validator: (val) => val.length < 6  ? 'Enter a password 6+ chars long' : null,
+                            onChanged: (val) {setState(() => password = val);},
+                            style: TextStyle(
+                              decorationColor: Colors.white,
+                              color: Colors.white,
+                            ),
+                            decoration: const InputDecoration(
+                              hintText: '\$ Custom Amount (USD)',
+                              labelText: null,
+                            )))),
+                    Container(
+                        margin: EdgeInsets.only(top: 10.0, right:2, left: 2),
+                        height: 60,
+                        width: 100,
+                        child: ButtonTheme(
+                            child: RaisedButton(
+                                color: Colors.teal,
+                                child: Text("\$"+password),
+                                onPressed: (null)
+                            )))
+                  ],
                 ),
-
-                Container(
-                    margin: EdgeInsets.only(top: 10.0),
-                    child: ButtonTheme(
-                        minWidth: 200,
-                        child: RaisedButton(
-                          color: Colors.teal,
-                          child: Text('Donate'),
-                          onPressed: (null)
-                        ))),
               ]),
         ))
     ;
